@@ -145,9 +145,9 @@ O backend utiliza as seguintes variáveis de ambiente:
 No PowerShell:
 
 ```powershell
-$env:DATABASE_URL="jdbc:postgresql://localhost:5432/servidores_db"
-$env:DATABASE_USERNAME="servidores"
-$env:DATABASE_PASSWORD="servidores"
+$env:DATABASE_URL="jdbc:postgresql://localhost:5432/example_db"
+$env:DATABASE_USERNAME="username_example"
+$env:DATABASE_PASSWORD="password_example"
 $env:PORT="8080"
 $env:CORS_ALLOWED_ORIGINS="http://localhost:4200"
 ```
