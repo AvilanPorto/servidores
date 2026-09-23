@@ -273,21 +273,12 @@ public class ServidorService {
     private void registrarDesligamento(
             Servidor servidor,
             Secretaria secretariaOrigem) {
-
-        Integer ultimoSequencial = servidorHistoricoRepository
-                .buscarUltimoSequencial(servidor.getId())
-                .orElse(0);
-
-        ServidorHistorico historico = new ServidorHistorico();
-
-        historico.setServidor(servidor);
-        historico.setSequencial(ultimoSequencial + 1);
-        historico.setTipoEvento(TipoEvento.DESLIGAMENTO);
-        historico.setSecretariaOrigem(secretariaOrigem);
-        historico.setSecretariaDestino(null);
-        historico.setDataEvento(LocalDate.now());
-
-        servidorHistoricoRepository.save(historico);
+        registrarHistorico(
+                servidor,
+                TipoEvento.DESLIGAMENTO,
+                secretariaOrigem,
+                null
+        );
     }
 
 
@@ -295,16 +286,12 @@ public class ServidorService {
             Servidor servidor,
             Secretaria secretariaDestino) {
 
-        ServidorHistorico historico = new ServidorHistorico();
-
-        historico.setServidor(servidor);
-        historico.setSequencial(1);
-        historico.setTipoEvento(TipoEvento.ADMISSAO);
-        historico.setSecretariaOrigem(null);
-        historico.setSecretariaDestino(secretariaDestino);
-        historico.setDataEvento(LocalDate.now());
-
-        servidorHistoricoRepository.save(historico);
+        registrarHistorico(
+                servidor,
+                TipoEvento.ADMISSAO,
+                null,
+                secretariaDestino
+        );
     }
 
     private void registrarTransferencia(
@@ -312,40 +299,45 @@ public class ServidorService {
             Secretaria secretariaOrigem,
             Secretaria secretariaDestino) {
 
-        Integer ultimoSequencial = servidorHistoricoRepository
-                .buscarUltimoSequencial(servidor.getId())
-                .orElse(0);
-
-        ServidorHistorico historico = new ServidorHistorico();
-
-        historico.setServidor(servidor);
-        historico.setSequencial(ultimoSequencial + 1);
-        historico.setTipoEvento(TipoEvento.TRANSFERENCIA);
-        historico.setSecretariaOrigem(secretariaOrigem);
-        historico.setSecretariaDestino(secretariaDestino);
-        historico.setDataEvento(LocalDate.now());
-
-        servidorHistoricoRepository.save(historico);
+        registrarHistorico(
+                servidor,
+                TipoEvento.REATIVACAO,
+                secretariaOrigem,
+                secretariaDestino
+        );
     }
 
     private void registrarReativacao(
             Servidor servidor,
             Secretaria secretariaDestino) {
 
-        Integer ultimoSequencial = servidorHistoricoRepository
-                .buscarUltimoSequencial(servidor.getId())
-                .orElse(0);
+        registrarHistorico(
+                servidor,
+                TipoEvento.REATIVACAO,
+                null,
+                secretariaDestino
+        );
+    }
+
+    private void registrarHistorico(
+            Servidor servidor,
+            TipoEvento tipoEvento,
+            Secretaria secretariaDestino,
+            Secretaria secretariaOrigem
+    ) {
+        Integer UltimoSequencial = servidorHistoricoRepository.buscarUltimoSequencial(servidor.getId()).orElse(0);
 
         ServidorHistorico historico = new ServidorHistorico();
 
         historico.setServidor(servidor);
-        historico.setSequencial(ultimoSequencial + 1);
-        historico.setTipoEvento(TipoEvento.REATIVACAO);
-        historico.setSecretariaOrigem(null);
+        historico.setSequencial(UltimoSequencial + 1);
+        historico.setTipoEvento(tipoEvento);
+        historico.setSecretariaOrigem(secretariaOrigem);
         historico.setSecretariaDestino(secretariaDestino);
         historico.setDataEvento(LocalDate.now());
 
         servidorHistoricoRepository.save(historico);
+
     }
 
     public List<ServidorHistoricoResponse> listarHistorico(Long servidorId) {
